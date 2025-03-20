@@ -8,11 +8,27 @@ const fsPromises = require('fs').promises;
 // Initialize puppeteer with stealth plugin
 puppeteer.use(StealthPlugin());
 
+// Function to get Chrome executable path based on platform
+function getChromePath() {
+  switch (process.platform) {
+    case 'win32':
+      return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    case 'linux':
+      return '/usr/bin/google-chrome-stable';
+    case 'darwin':
+      return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+    default:
+      throw new Error('Unsupported platform');
+  }
+}
+
 class ScreenshotTool {
   constructor(options = {}) {
+    const chromePath = getChromePath();
     this.defaultOptions = {
       headless: 'new',
       defaultViewport: null,
+      executablePath: chromePath,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       ...options
     };
